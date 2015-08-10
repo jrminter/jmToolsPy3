@@ -22,5 +22,5 @@ def complexPolarPlot(a, color='#CC0000'):
 	import numpy as np
 	for x in a:
 		plt.polar(np.angle(x),np.abs(x), marker='.',color=color)
-	fig = plt.gcf()
-	return fig
+	# fig = plt.gcf()
+	# return fig
