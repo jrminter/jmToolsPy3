@@ -1,5 +1,5 @@
 build
 dist
 jmToolsPy3.egg-info
-test/.ipynb_checkpoints
+testNotebooks/.ipynb_checkpoints
 jmToolsPy3/__pycache__/*
