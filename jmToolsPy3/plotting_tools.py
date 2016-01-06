@@ -2,23 +2,25 @@
 plotting_tools: Convenience functions for plotting images and data
 ------------------------------------------------------------------------
     
- Ver        Date       Who    Comments
-------    ----------   ---    ------------------------------------------
-0.0.90    2015-08-10   JRM    Initial prototype: complexPolarPlot
-0.0.92    2015-12-31   JRM    move to PEP8 and add functions
-0.0.935   2015-12-31   JRM    Added plotImageWithHistogram and improved
-                              the comments.
+ Ver       Date      Who  Comments
+-------  ----------  ---  ------------------------------------------
+0.0.90   2015-08-10  JRM  Initial prototype: complexPolarPlot
+0.0.92   2015-12-31  JRM  move to PEP8 and add functions
+0.0.935  2015-12-31  JRM  Added plotImageWithHistogram and improved
+                          the comments.
+0.0.940  2016-01-06  JRM  Numpy doc string format
 """
 # -*- coding: utf-8 -*-
 def complexPolarPlot(a, color='#CC0000'):
-    """complexPolarPlot(a)
-    Plot a list or vector of complex points as a polar plot.
+    r"""Plot a list or vector of complex points as a polar plot.
     Defaults to red points.
 
     Parameters
     ----------
-    a     : a vector or list of points
-    color : a color string (Default red, '#CC0000')
+    a : a vector or list of complex points
+
+    color : string '#CC0000', optionall
+        a color string (Default red, '#CC0000')
     
     Returns
     -------
@@ -32,52 +34,51 @@ def complexPolarPlot(a, color='#CC0000'):
     return fig
 
 def plotImageMontage(lData, lTitles, nrows, ncols, title=None, baseSize=5, cmap='gray' ,fSize=12, bare=False, cb=False, **kwargs):
-    """plotImageMontage(lData, lTitles, nrows, ncols, title=None, cmap='gray',
-                         baseSize=5, fSize=12, bare=False, cb=False, **kwargs)
-    Create a figure from an ensemble of images
+    r"""Create a figure from an ensemble of images
 
     Parameters
     ----------
-    lData    : A list of images (numpy arrays)
-               These are the images to be plotted.
+    lData : A list of images (numpy arrays)
+        These are the images to be plotted.
 
-    lTitles  : A list of (strings)
-               These are the titles corresponding to the images
+    lTitles : A list of strings
+        These are the titles corresponding to the images
 
-    nrows    : An integer
-               The number of rows for the figure
+    nrows : int
+        The number of rows for the figure
 
-    ncols    : An integer
-               The number of columns for the figure. 
-               Note: nrows x ncols should equal the number of images in lData
+    ncols : int
+        The number of columns for the figure. 
+        Note: nrows x ncols should equal the number of images in lData
 
-    title    : A string
-               The title for the figure, if desired. Defaults to None
+    title : string
+        The title for the figure, if desired. Defaults to None
 
-    cmap     : a matplotlib color map.
-               Default is 'gray'. One can use a string or a
-               colormap like plt.cm.gray or plt.cm.viridis.
+    cmap : a matplotlib color map.
+        Default is 'gray'. One can use a string or a
+        colormap like plt.cm.gray or plt.cm.viridis.
 
-    baseSize : A number 
-               The base size in inches for an image. The function will
-               calculate the figure size. Default is 5.
+    baseSize : number 5, optional
+        The base size in inches for an image. The function will
+        calculate the figure size.
 
-    fSize    : An integer
-               The font size for title of each image. Default is 12.
-               The figure title will be 2 points larger.
+    fSize : int 12, optional
+        The font size for title of each image. The figure title will
+        be 2 points larger.
 
-    bare     : a boolean flag (default False).
-               If True, the axis scales are turned off.
+    bare : boolean False, optional
+        If True, the axis scales are turned off.
 
-    cb       : a boolean flag (default True).
-               If True a color bar is plotted on the right side of the each image.
+    cb : boolean True, optional
+        If True a color bar is plotted on the right side of the each image.
 
-    **kwargs : Any other kword arguments. Useful arguments are vmin, vmax,
-               interpolation, and colormap. It accepts string formates like
-               'gray' out of the box. If you import matplotlib.pyplot as plt,
-               you can input all theformats like plt.cm.spectal, plt.cm.gray,
-               plt.cm.viridis. The defalt is the string 'gray'.
-
+    **kwargs : Any other kword arguments.
+        Useful arguments are vmin, vmax,
+        interpolation, and colormap. It accepts string formates like
+        'gray' out of the box. If you import matplotlib.pyplot as plt,
+        you can input all theformats like plt.cm.spectal, plt.cm.gray,
+        plt.cm.viridis. The defalt is the string 'gray'.
+    
     Returns
     --------
     fig      : A matplotlib figure
@@ -121,35 +122,33 @@ def plotImageMontage(lData, lTitles, nrows, ncols, title=None, baseSize=5, cmap=
 
 
 def iter_channels(color_image):
-    """Yield color channels of an image."""
+    r"""Yield color channels of an image."""
     # Roll array-axis so that we iterate over the color channels of an image.
     import numpy as np
     for channel in np.rollaxis(color_image, -1):
         yield channel
 
 def plotImageWithHistogram(im, size, alpha=0.3):
-    """plotImageWithHistogram(im, size, alpha=0.3)
-
-    Plot an image alongside its histogram
+    r"""Plot an image alongside its histogram
 
     Parameters
     ----------
 
-    im      : a numpy array
-              The input image
+    im : a numpy array
+        The input image
 
-    size    : a number
-              The size (in in) for the single figure. The plot will be
-              that high and twice that wide.
+    size : number
+        The size (in in) for the single figure. The plot will be
+        that high and twice that wide.
 
-    alpha   : a float
-              The transparency. A value of 0.3 is great for an RGB image,
-              a value of 0.8 is a bit better for a grayscale image.
+    alpha : float
+        The transparency. A value of 0.3 is great for an RGB image,
+        a value of 0.8 is a bit better for a grayscale image.
 
     Returns
     -------
-    a tuple   (ax__image, ax_hist) 
-              The matplotlib axes for the figure.
+    (ax__image, ax_hist) 
+        The matplotlib axes for the figure.
 
     Examples
     --------
