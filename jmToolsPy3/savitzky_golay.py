@@ -1,5 +1,5 @@
 def savitzky_golay(y, window_size, order, deriv=0, rate=1):
-    """Smooth (and optionally differentiate) data with a Savitzky-Golay filter.
+    r"""Smooth (and optionally differentiate) data with a Savitzky-Golay filter.
     The Savitzky-Golay filter removes high frequency noise from data.
     It has the advantage of preserving the original shape and
     features of the signal better than other types of filtering
@@ -12,19 +12,23 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     Parameters
     ----------
 
-    y           : array_like, shape (N,)
-                  the values of the time history of the signal.
+    y : array_like, shape (N,)
+        the values of the time history of the signal.
+
     window_size : int
-                  the length of the window. Must be an odd integer number.
-    order       : int
-                  the order of the polynomial used in the filtering.
-                  Must be less then `window_size` - 1.
-    deriv       : int
-                  the order of the derivative to compute (default = 0 means only smoothing)
+        the length of the window. Must be an odd integer number.
+
+    order : int
+        the order of the polynomial used in the filtering.
+        Must be less then `window_size` - 1.
+
+    deriv : int
+        the order of the derivative to compute (default = 0 means only smoothing)
+
     Returns
     -------
-    ys          : ndarray, shape (N)
-                  the smoothed signal (or it's n-th derivative).
+    ys : ndarray, shape (N)
+        the smoothed signal (or it's n-th derivative).
 
     Notes
     -----
@@ -33,6 +37,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     approach is to make for each point a least-square fit with a
     polynomial of high order over a odd-sized window centered at
     the point.
+
     Examples
     --------
     t = np.linspace(-4, 4, 500)
@@ -44,6 +49,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     plt.plot(t, ysg, 'r', label='Filtered signal')
     plt.legend()
     plt.show()
+    
     References
     ----------
     .. [1] A. Savitzky, M. J. E. Golay, Smoothing and Differentiation of

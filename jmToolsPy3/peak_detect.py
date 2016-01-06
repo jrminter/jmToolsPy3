@@ -1,5 +1,5 @@
 def peak_detect(y_axis, x_axis = None, lookahead = 500, delta = 0):
-    """
+    r"""
     Detect peaks in a list
 
     Converted from/based on a MATLAB script at http://billauer.co.il/peakdet.html
@@ -14,27 +14,34 @@ def peak_detect(y_axis, x_axis = None, lookahead = 500, delta = 0):
     
     Parameters
     ----------
-    y_axis    : A list containg the signal over which to find peaks
-    x_axis    : A x-axis whose values correspond to the 'y_axis' list and is used
-                in the return to specify the postion of the peaks. If omitted the index
-                of the y_axis is used. (default: None)
-    lookahead : (optional) distance to look ahead from a peak candidate to
-                determine if it is the actual peak (default: 500) 
-                '(sample / period) / f' where '4 >= f >= 1.25' might be a good value
-    delta     : (optional) this specifies a minimum difference between a peak and
-                the following points, before a peak may be considered a peak. Useful
-                to hinder the algorithm from picking up false peaks towards to end of
-                the signal. To work well delta should be set to 'delta >= RMSnoise * 5'.
-                (default: 0)
-                Delta function causes a 20% decrease in speed, when omitted
-                Correctly used it can double the speed of the algorithm
+    y_axis : array_like
+        A list containg the signal over which to find peaks
+
+    x_axis : array_like {None} (optional)
+        A x-axis whose values correspond to the 'y_axis' list and is used
+        in the return to specify the postion of the peaks. If omitted the
+        index of the y_axis is used.
+
+    lookahead : int {500}, optional
+        distance to look ahead from a peak candidate to determine if it
+        is the actual peak. '(sample / period) / f' where '4 >= f >= 1.25'
+        might be a good value.
+
+    delta : int must be positive {0}, optional
+        This specifies a minimum difference between a peak and the
+        following points, before a peak may be considered a peak. Useful
+        to hinder the algorithm from picking up false peaks towards to end of
+        the signal. To work well delta should be set to 'delta >= RMSnoise * 5'.
+        Delta function causes a 20% decrease in speed, when omitted
+        Correctly used it can double the speed of the algorithm
     
     Returns
     -------
     [maxtab, mintab] : Two lists containing the positive and negative
-                       peaks respectively. Each cell of the lists contains a tupple of:
-                       (position, peak_value) 
-                       to get the average peak value do 'np.mean(maxtab, 0)[1]' on the results
+                       peaks respectively. Each cell of the lists
+                       contains a tupple of: (position, peak_value) 
+                       to get the average peak value do
+                       'np.mean(maxtab, 0)[1]' on the results
     """
     import numpy as np
     maxtab = []
