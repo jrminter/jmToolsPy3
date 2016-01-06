@@ -9,6 +9,7 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.935  2015-12-31  JRM  Added plotImageWithHistogram and improved
                           the comments.
 0.0.940  2016-01-06  JRM  Numpy doc string format
+0.0.945  2016-01-06  JRM  More functions
 """
 # -*- coding: utf-8 -*-
 def complexPolarPlot(a, color='#CC0000'):
@@ -88,7 +89,7 @@ def plotImageMontage(lData, lTitles, nrows, ncols, title=None, baseSize=5, cmap=
     --------
 
     from skimage import color, data
-    from jmToolsPy import plotImageMontage
+    from jmToolsPy3 import plotImageMontage
 
     im1 = color.rgb2gray(data.astronaut())
     im2 = data.coins()
@@ -185,6 +186,45 @@ def plotImageWithHistogram(im, size, alpha=0.3):
     return ax_image, ax_hist
 
 
+def plotImage(im, cmap='gray' , figsize=(7,8), bare=True):
+    r"""Plot an image in a tight layout
 
+    Parameters
+    ----------
+
+    im : a numpy array
+        The input image
+
+    cmap : a string or plt.cm.colormap
+        The colormap
+
+    figsize : tuple (width, height), (7,8). default
+        The size (in in) for the single figure.
+
+    bare: boolean True, default
+        Flag for no axis labels
+
+    Returns
+    -------
+    None.
+
+    Example
+    --------
+
+    from jmToolsPy3 import plotImage
+    import numpy as np
+    from skimage import data
+
+    img1 = data.camera()
+    plotImage(img1, cmap='viridis', figsize=(5,5), bare=False)
+    """
+    from matplotlib import pyplot as plt
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot(1, 1, 1)
+    ax.imshow(im, cmap=cmap);
+    if bare:
+        ax.xaxis.set_visible(False);
+        ax.yaxis.set_visible(False)
+    fig.set_tight_layout(True)
 
 
