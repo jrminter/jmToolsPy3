@@ -14,29 +14,36 @@ plotting_tools: Convenience functions for plotting images and data
 """
 # -*- coding: utf-8 -*-
 
-def showImages(images,titles=None,bare=False):
+def showImages(images,titles=None, cmap='gray', bare=False):
     """Display a list of images
 
     Parameters
     ----------
-    images : images (numpy arrays)
+    images : [images] (a list of numpy arrays)
         These are the images to be plotted.
 
     titles: A list of strings (None)
         These are the titles corresponding to the images. Default is None
 
+    cmap: a matplotlib color map ('gray').
+        Default is 'gray'. One can use a string or a
+        colormap like plt.cm.gray or plt.cm.viridis.
+
     bare: Boolean (False)
         A flag to supress axis numbering
     """
+    from matplotlib import pyplot as plt
+    import numpy as np
+
     n_ims = len(images)
     if titles is None: titles = ['(%d)' % i for i in range(1,n_ims + 1)]
     fig = plt.figure()
     n = 1
     for image,title in zip(images,titles):
         a = fig.add_subplot(1,n_ims,n) # Make subplot
-        if image.ndim == 2: # Is image grayscale?
-            plt.gray() # Only place here where you can't replace 'gray' with 'grey'
-        plt.imshow(image)
+        # if image.ndim == 2: # Is image grayscale?
+        #     plt.gray() # Only place here where you can't replace 'gray' with 'grey'
+        plt.imshow(image, cmap=cmap)
         a.set_title(title)
         if bare:
             a.xaxis.set_visible(False);
