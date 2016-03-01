@@ -11,8 +11,107 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.940  2016-01-06  JRM  Numpy doc string format
 0.0.945  2016-01-06  JRM  More functions
 0.0.950  2016-02-23  JRM  Added showImages
+0.0.955  2016-03-01  JRM  Added watershedBlobAnalysis
 """
 # -*- coding: utf-8 -*-
+
+def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, minPx=10, sf=1.833):
+    """
+    Binarize an input image using the supplied threshold, perform a watershed
+    analysis on a smoothed Euclidean Distance Map, optionally display boundaries
+    on the image, and return a list of lists of the properties of the blobs.
+
+    Parameters
+    ----------
+    img: ndarray (2D)
+        Input image, assumed to be grayscale
+    thr: number
+        The value to use for the gray level threshold
+    bright: boolean (True)
+        A flag indicating if the background is bright, and the blobs have
+        gray levels less than the threshold value or the reverse.
+    showPlot: boolean (True)
+        A flag indicating whether to display a plot of the boundaries displayed
+        in red on the grayscale input image
+    sig: number (3)
+        The sigma parameter for a gaussian smoot of the Euclidean Distance Map
+    pkSz: number (3)
+        The peak size of the footprint for the call to find the peak local
+        maxima.
+    minPx: integrer (10)
+        the minimum number of pixels to conside a "blob"
+    sf: float (1.833)
+        The scale factor (units/px) for the image. The default is for a test
+        image.
+
+    Returns
+
+    out: a list of lists
+        [equivalent circular diameter, centroid, aspect ratio, solidity, circcircularity]
+        Lists of feature vectors useful for particle size and shape analysis.
+        Only the ECD is in dimensions implied by the scale factor.
+        
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy import ndimage
+    from skimage.morphology import disk, watershed, remove_small_objects
+    from skimage.filters.rank import median
+    from skimage.feature import peak_local_max
+    from skimage.segmentation import find_boundaries, mark_boundaries
+    from skimage.measure import regionprops
+    from skimage.color import gray2rgb
+    
+    if bright:
+        bin_img = img < thr
+    else:
+        bin_img = img > thr
+    bin_img = remove_small_objects(bin_img, min_size=minPx, connectivity=1,
+                                   in_place=False)
+    dist = ndimage.distance_transform_edt(bin_img)
+    smooth = ndimage.gaussian_filter(dist, sig)
+    # peak_local_max
+    # possible below: #,labels=c.binarybackground)
+    
+    local_maxi = peak_local_max(smooth, indices=False, footprint=np.ones((pkSz, pkSz)))
+    markers = ndimage.label(local_maxi)[0]  
+    labels = watershed(-smooth, markers, mask=bin_img)
+    props = regionprops(labels)
+    ecd = []
+    cent = []
+    ar = []
+    solid =[]
+    circ = []
+    for prop in props:
+        cent.append(prop.centroid)
+        ecd.append(round(sf*prop.equivalent_diameter, 3))
+        if prop.minor_axis_length == 0:
+            ar.append(float('nan'))
+        else:
+            ar.append(round(prop.major_axis_length/prop.minor_axis_length, 3))
+        solid.append(prop.solidity)
+        fArea = float(prop.area)
+        perim = prop.perimeter
+        cir = 4.0 * np.pi * (fArea / (perim)**2)
+        circ.append(cir)
+    #find outline of objects for plotting
+    
+    if showPlot:
+        boundaries = find_boundaries(labels)
+        img_rgb = gray2rgb(img)
+        overlay = np.flipud(mark_boundaries(img_rgb, boundaries, color=(1, 0, 0)))
+        # plt.imshow(overlay);
+    
+        fig = plt.figure(figsize=(7,7))
+        ax = fig.add_subplot(1, 1, 1)
+        ax.imshow(overlay, cmap='spectral');
+        ax.xaxis.set_visible(False);
+        ax.yaxis.set_visible(False)
+        fig.set_tight_layout(True)
+    
+    return ([ecd, cent, ar, solid, circ])
+
+
 
 def showImages(images,titles=None, cmap='gray', bare=False):
     """Display a list of images
