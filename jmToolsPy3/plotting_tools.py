@@ -12,14 +12,16 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.945  2016-01-06  JRM  More functions
 0.0.950  2016-02-23  JRM  Added showImages
 0.0.955  2016-03-01  JRM  Added watershedBlobAnalysis
+0.0.956  2016-03-01  JRM  Some tweaks to output
 """
 # -*- coding: utf-8 -*-
 
 def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, minPx=10, sf=1.833):
     """
-    Binarize an input image using the supplied threshold, perform a watershed
-    analysis on a smoothed Euclidean Distance Map, optionally display boundaries
-    on the image, and return a list of lists of the properties of the blobs.
+    Binarize an input image using the supplied threshold, perform a
+    watershed analysis on a smoothed Euclidean Distance Map, optionally
+    display boundaries on the image, and return a list of lists of the
+    properties of the blobs.
 
     Parameters
     ----------
@@ -28,33 +30,38 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
     thr: number
         The value to use for the gray level threshold
     bright: boolean (True)
-        A flag indicating if the background is bright, and the blobs have
-        gray levels less than the threshold value or the reverse.
+        A flag indicating if the background is bright, and the blobs
+        have gray levels less than the threshold value or the reverse.
     showPlot: boolean (True)
-        A flag indicating whether to display a plot of the boundaries displayed
-        in red on the grayscale input image
+        A flag indicating whether to display a plot of the boundaries
+        displayed in red on the grayscale input image
     sig: number (3)
-        The sigma parameter for a gaussian smoot of the Euclidean Distance Map
+        The sigma parameter for a gaussian smoot of the Euclidean
+        Distance Map
     pkSz: number (3)
-        The peak size of the footprint for the call to find the peak local
-        maxima.
+        The peak size of the footprint for the call to find the peak 
+        local maxima.
     minPx: integrer (10)
         the minimum number of pixels to conside a "blob"
     sf: float (1.833)
-        The scale factor (units/px) for the image. The default is for a test
-        image.
+        The scale factor (units/px) for the image. The default is for a
+        test image.
 
     Returns
 
     out: a list of lists
-        [equivalent circular diameter, centroid, aspect ratio, solidity, circcircularity]
-        Lists of feature vectors useful for particle size and shape analysis.
-        Only the ECD is in dimensions implied by the scale factor.
+        [equivalent circular diameter, centroid, aspect ratio, solidity,
+        circircularity, squareness]
+        Lists of feature vectors useful for particle size and shape
+        analysis. Only the ECD is in dimensions implied by the scale
+        factor.
         
     """
+    from math import sqrt
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy import ndimage
+    from skimage import img_as_ubyte
     from skimage.morphology import disk, watershed, remove_small_objects
     from skimage.filters.rank import median
     from skimage.feature import peak_local_max
@@ -82,6 +89,7 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
     ar = []
     solid =[]
     circ = []
+    square = []
     for prop in props:
         cent.append(prop.centroid)
         ecd.append(round(sf*prop.equivalent_diameter, 3))
@@ -94,11 +102,16 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
         perim = prop.perimeter
         cir = 4.0 * np.pi * (fArea / (perim)**2)
         circ.append(cir)
+        square.append(0.25*perim/sqrt(fArea))
     #find outline of objects for plotting
     
     if showPlot:
         boundaries = find_boundaries(labels)
-        img_rgb = gray2rgb(img)
+        max_g = np.max(img)
+        if max_g > 255:
+            img.astype(np.float32)
+            img = img / float(max_g)
+        img_rgb = gray2rgb(img) # transform 16bit to 8
         overlay = np.flipud(mark_boundaries(img_rgb, boundaries, color=(1, 0, 0)))
         # plt.imshow(overlay);
     
@@ -109,7 +122,7 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
         ax.yaxis.set_visible(False)
         fig.set_tight_layout(True)
     
-    return ([ecd, cent, ar, solid, circ])
+    return ([ecd, cent, ar, solid, circ, square])
 
 
 
