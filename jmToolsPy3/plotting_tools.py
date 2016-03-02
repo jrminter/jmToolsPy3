@@ -13,10 +13,11 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.950  2016-02-23  JRM  Added showImages
 0.0.955  2016-03-01  JRM  Added watershedBlobAnalysis
 0.0.956  2016-03-01  JRM  Some tweaks to output
+0.0.957  2016-03-01  JRM  Some more tweaks to output
 """
 # -*- coding: utf-8 -*-
 
-def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, minPx=10, sf=1.833):
+def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, minPx=10, sf=1.79):
     """
     Binarize an input image using the supplied threshold, perform a
     watershed analysis on a smoothed Euclidean Distance Map, optionally
@@ -36,16 +37,16 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
         A flag indicating whether to display a plot of the boundaries
         displayed in red on the grayscale input image
     sig: number (3)
-        The sigma parameter for a gaussian smoot of the Euclidean
+        The sigma parameter for a gaussian smooth of the Euclidean
         Distance Map
     pkSz: number (3)
         The peak size of the footprint for the call to find the peak 
         local maxima.
     minPx: integrer (10)
         the minimum number of pixels to conside a "blob"
-    sf: float (1.833)
+    sf: float (1.79)
         The scale factor (units/px) for the image. The default is for a
-        test image.
+        test image of AgX grains where the scale factor is 1.79 nm/px.
 
     Returns
 
