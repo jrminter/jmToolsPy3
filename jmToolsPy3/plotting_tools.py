@@ -14,8 +14,36 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.955  2016-03-01  JRM  Added watershedBlobAnalysis
 0.0.956  2016-03-01  JRM  Some tweaks to output
 0.0.957  2016-03-01  JRM  Some more tweaks to output
+0.0.959  2016-03-05  JRM  Add ensureDir and fix_gray_image_to_rgb utils
 """
 # -*- coding: utf-8 -*-
+
+def ensureDir(d):
+    """ensureDir(d)
+    Check if the directory, d, exists, and if not create it."""
+    import os
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+def fix_gray_image_to_rgb(img):
+    """fix_gray_image_to_rgb(img)
+    Convert an image to float, scale from 0.0 to 255.0,
+    and convert to RGB"""
+
+    import numpy as np
+    from skimage import img_as_ubyte
+    from skimage.color import gray2rgb
+
+    img = img.astype(float)
+    maxV = np.max(img)
+    minV = np.min(img)
+    fact = 255.0/(maxV-minV)
+    img -= minV
+    img *= fact
+    img = img.astype(int)
+    img = img_as_ubyte(img)
+    img = gray2rgb(img)
+    return img
 
 def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, minPx=10, sf=1.79):
     """
@@ -121,7 +149,7 @@ def watershedBlobAnalysis(img, thr, bright=True, showPlot=True, sig=3, pkSz=3, m
         ax.imshow(overlay, cmap='spectral');
         ax.xaxis.set_visible(False);
         ax.yaxis.set_visible(False)
-        fig.set_tight_layout(True)
+        fig.set_tight_layout(True);
     
     return ([ecd, cent, ar, solid, circ, square])
 
