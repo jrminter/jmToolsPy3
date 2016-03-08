@@ -15,8 +15,37 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.956  2016-03-01  JRM  Some tweaks to output
 0.0.957  2016-03-01  JRM  Some more tweaks to output
 0.0.959  2016-03-05  JRM  Add ensureDir and fix_gray_image_to_rgb utils
+0.0.960  2016-03-07  JRM  Added clip_img_hi
 """
 # -*- coding: utf-8 -*-
+
+def clip_img_hi(img, cut=10):
+    """
+    clip_img_hi(img, cut=10)
+
+    Clip a number of spurious pixels from the upper end of the gray
+    level histogram of an image.
+
+    Parameters
+    ----------
+    img: ndarray (2D)
+        Input image, assumed to be grayscale
+    cut: number (default 10)
+        The number of bright pixels to clip
+
+    Returns
+
+    clipped: the clipped image
+    """
+    import numpy as np
+    his, bins = np.histogram(img, bins=np.max(img)+1)
+    n = np.max(img)
+    sumCut = 0
+    while sumCut <= cut:
+        n -= 1
+        sumCut += his[n]
+    clipped = np.clip(img, 0, n)
+    return clipped
 
 def ensureDir(d):
     """ensureDir(d)
