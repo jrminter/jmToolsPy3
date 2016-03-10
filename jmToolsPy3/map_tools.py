@@ -5,6 +5,7 @@ map_tools: Convenience functions for processing X-Ray EDS maps
  Ver       Date      Who  Comments
 -------  ----------  ---  ------------------------------------------
 0.0.959  2016-03-04  JRM  Add ensureDir and fix_gray_image_to_rgb utils
+0.0.961  2016-03-10  JRM  Add medianFilterMaps
 """
 # -*- coding: utf-8 -*-
 
@@ -59,3 +60,25 @@ def denoiseMaps(imgs, wt = 0.05, ep = 0.02, cycles = 200):
         denoised.append(dn)
 
     return denoised
+
+def medianFilterMaps(imgs, px=3):
+    """medianFilterMaps(imgs, px=3)
+    
+    A wrapper for ndimage median_filter
+    
+    Parameters
+    ----------
+    imgs: a list of ndarrays (2D)
+        Input images, assumed to be grayscale
+    px: number (default 3)
+        The size of the median filter
+    
+    A list of median filtered images
+    """
+    from scipy import ndimage as ndi
+    filtered = []
+    for img in imgs:
+        mf = ndi.filters.median_filter(img, size=(px,px))
+        filtered.append(mf)
+
+    return filtered
