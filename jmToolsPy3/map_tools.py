@@ -6,6 +6,7 @@ map_tools: Convenience functions for processing X-Ray EDS maps
 -------  ----------  ---  ------------------------------------------
 0.0.959  2016-03-04  JRM  Add ensureDir and fix_gray_image_to_rgb utils
 0.0.961  2016-03-10  JRM  Add medianFilterMaps
+0.0.962  2016-03-14  JRM  Add rescaleFilteredMaps
 """
 # -*- coding: utf-8 -*-
 
@@ -82,3 +83,35 @@ def medianFilterMaps(imgs, px=3):
         filtered.append(mf)
 
     return filtered
+
+def rescaleFilteredMaps(imgs, skipBlank=False, bVerbose=False):
+    """rescaleMaps(imgs, skipBlank=False, bVerbose=False)
+
+    Rescale the map intensities of noise-filtered maps. Treat
+    the ROI by itself. Skip a blank if needed."""
+    import numpy as np
+    maxCts = []
+    for img in imgs:
+        maxCts.append(np.max(img))
+    l = len(imgs)
+    if bVerbose:
+        print(l)
+        print(maxCts)
+    if skipBlank:
+        maxG = np.max(maxCts[0:l-2])
+        maxB = maxCts[l-2]
+        roiG = maxCts[l-1]
+        for i in range(l-2):
+            imgs[i] /= maxG
+        imgs[l-2] /= maxB
+        imgs[l-1] /= roiG
+    else:
+        maxG = np.max(maxCts[0:l-1])
+        roiG = maxCts[l-1]
+        for i in range(l-1):
+            imgs[i] /= maxG
+        imgs[l-1] /= roiG
+    return imgs
+
+
+
