@@ -16,6 +16,7 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.957  2016-03-01  JRM  Some more tweaks to output
 0.0.959  2016-03-05  JRM  Add ensureDir and fix_gray_image_to_rgb utils
 0.0.960  2016-03-07  JRM  Added clip_img_hi
+0.0.965  2016-03-24  JRM  Added flag for colorbar to plotImage
 """
 # -*- coding: utf-8 -*-
 
@@ -396,7 +397,7 @@ def plotImageWithHistogram(im, size, alpha=0.3):
     return ax_image, ax_hist
 
 
-def plotImage(im, cmap='gray' , figsize=(7,8), bare=True):
+def plotImage(im, cmap='gray' , figsize=(7,8), cb=False, bare=True):
     r"""Plot an image in a tight layout
 
     Parameters
@@ -411,6 +412,9 @@ def plotImage(im, cmap='gray' , figsize=(7,8), bare=True):
     figsize : tuple (width, height), (7,8). default
         The size (in in) for the single figure.
 
+    cb : boolean False, default
+        Add a colorbar
+
     bare: boolean True, default
         Flag for no axis labels
 
@@ -422,19 +426,28 @@ def plotImage(im, cmap='gray' , figsize=(7,8), bare=True):
     --------
 
     from jmToolsPy3 import plotImage
-    import numpy as np
     from skimage import data
 
     img1 = data.camera()
     plotImage(img1, cmap='viridis', figsize=(5,5), bare=False)
     """
     from matplotlib import pyplot as plt
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(1, 1, 1)
-    ax.imshow(im, cmap=cmap);
+    cim = ax.imshow(im, cmap=cmap);
     if bare:
         ax.xaxis.set_visible(False);
-        ax.yaxis.set_visible(False)
-    fig.set_tight_layout(True)
+        ax.yaxis.set_visible(False);
+    if cb == True:
+        # Create divider for existing axes instance
+        div = make_axes_locatable(ax)
+        # Append axes to the right of ax, with 10% width of ax
+        cax = div.append_axes("right", size="10%", pad=0.05)
+        # Create colorbar in the appended axes
+        cbar = plt.colorbar(cim, cax=cax)
+    else:
+        fig.set_tight_layout(True)
 
 
