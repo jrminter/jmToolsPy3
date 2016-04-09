@@ -13,6 +13,7 @@ hs_tools: Convenience functions for working with HyperSpy
 0.2.2  2015-07-27  JRM  Added strUni to plotEdsSpc
 0.2.3  2015-07-29  JRM  Added topHatFilter
 0.2.4  2016-04-08  JRM  Port to python3
+0.967  2016-04-09  JRM  bug fix
 """
 # -*- coding: utf-8 -*-
 # old
@@ -101,6 +102,8 @@ def makeEdsMaxPxSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
         The eV per channel for the detector (to keV inside).
     edsZeOf: float
         The zero offset for the detector in eV (to keV...)
+    keV: float
+        voltage  in keV
     npChan: int (0)
         number of channels to set to zero for the noise peak. Defaults to zero.
     verbose: boolean (False)
@@ -152,8 +155,8 @@ def makeEdsMaxPxSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     sig.metadata.Signal.signal_type = si.metadata.Signal.signal_type
     return(sig)
 
-def makeEdsSumSpc(si, edsEvCh, edsZeOf, npChan=0, verbose=False):
-    """makeEdsSumSpc(si, edsEvCh, edsZeOf, npChan=0, verbose=False):
+def makeEdsSumSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
+    """makeEdsSumSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     Make a sum spectrum from an EDS spectrum image
     
     Parameters
@@ -164,6 +167,8 @@ def makeEdsSumSpc(si, edsEvCh, edsZeOf, npChan=0, verbose=False):
         The eV per channel for the detector (to keV inside).
     edsZeOf: float
         The zero offset for the detector in eV (to keV...)
+    keV: float
+        voltage  in keV
     npChan: int (0)
         number of channels to set to zero for the noise peak. Defaults to zero.
     verbose: boolean (False)
