@@ -17,6 +17,7 @@ plotting_tools: Convenience functions for plotting images and data
 0.0.959  2016-03-05  JRM  Add ensureDir and fix_gray_image_to_rgb utils
 0.0.960  2016-03-07  JRM  Added clip_img_hi
 0.0.965  2016-03-24  JRM  Added flag for colorbar to plotImage
+0.0.966  2016-03-26  JRM  Added interpolation to functions
 """
 # -*- coding: utf-8 -*-
 
@@ -340,7 +341,7 @@ def iter_channels(color_image):
     for channel in np.rollaxis(color_image, -1):
         yield channel
 
-def plotImageWithHistogram(im, size, alpha=0.3):
+def plotImageWithHistogram(im, size, alpha=0.3, interpolation='nearest'):
     r"""Plot an image alongside its histogram
 
     Parameters
@@ -378,7 +379,7 @@ def plotImageWithHistogram(im, size, alpha=0.3):
     from skimage import exposure
     from matplotlib import pyplot as plt
     fig, (ax_image, ax_hist) = plt.subplots(ncols=2, figsize=(2*size, size))
-    ax_image.imshow(im, cmap=plt.cm.gray)
+    ax_image.imshow(im, cmap=plt.cm.gray, interpolation=interplolation)
     if im.ndim == 2:
         hist, bin_centers = exposure.histogram(im)
         ax_hist.fill_between(bin_centers, hist, alpha=alpha, color='gray')        
@@ -397,7 +398,7 @@ def plotImageWithHistogram(im, size, alpha=0.3):
     return ax_image, ax_hist
 
 
-def plotImage(im, cmap='gray' , figsize=(7,8), cb=False, bare=True):
+def plotImage(im, cmap='gray' , figsize=(7,8), cb=False, bare=True, interpolation='nearest'):
     r"""Plot an image in a tight layout
 
     Parameters
@@ -436,7 +437,7 @@ def plotImage(im, cmap='gray' , figsize=(7,8), cb=False, bare=True):
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(1, 1, 1)
-    cim = ax.imshow(im, cmap=cmap);
+    cim = ax.imshow(im, cmap=cmap, interpolation=interpolation);
     if bare:
         ax.xaxis.set_visible(False);
         ax.yaxis.set_visible(False);
