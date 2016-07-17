@@ -14,6 +14,7 @@ hs_tools: Convenience functions for working with HyperSpy
 0.2.3  2015-07-29  JRM  Added topHatFilter
 0.2.4  2016-04-08  JRM  Port to python3
 0.967  2016-04-09  JRM  bug fix
+0.968  2016-07-17  JRM  Changes to be compatible with hyperspy 1.0
 """
 # -*- coding: utf-8 -*-
 # old
@@ -23,7 +24,7 @@ hs_tools: Convenience functions for working with HyperSpy
 import os
 import os.path
 from io import StringIO
-import hyperspy.hspy as hs
+import hyperspy.api as hs
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -125,11 +126,11 @@ def makeEdsMaxPxSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     -92.54 PoM 1.79
     """
     
-    if si.metadata.Signal.record_by != 'spectrum':
-        spc = si.to_spectrum()
-    else:
-        spc = si
-    dat = spc.data
+    # if si.metadata.Signal.record_by != 'spectrum':
+    #    spc = si.to_spectrum()
+    # else:
+    #    spc = si
+    dat = si.data
     dat = dat.astype(float)
     if verbose:
         print(dat.shape)
@@ -151,7 +152,7 @@ def makeEdsMaxPxSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     sig.metadata.Acquisition_instrument.SEM.beam_energy = keV
     caption = "%s Max Pix Spectrum" % si.metadata.General.title
     sig.metadata.General.title = caption
-    sig.metadata.Signal.signal_origin = si.metadata.Signal.signal_origin
+    # sig.metadata.Signal.signal_origin = si.metadata.Signal.signal_origin
     sig.metadata.Signal.signal_type = si.metadata.Signal.signal_type
     return(sig)
 
@@ -190,11 +191,11 @@ def makeEdsSumSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     3> d2.getZeroOffset()
     -92.54 PoM 1.79
     """
-    if si.metadata.Signal.record_by != 'spectrum':
-        spc = si.to_spectrum()
-    else:
-        spc = si
-    dat = spc.data
+    # if si.metadata.Signal.record_by != 'spectrum':
+    #     spc = si.to_spectrum()
+    # else:
+    #     spc = si
+    dat = si.data
     dat = dat.astype(float)
     sl1 = dat.sum(axis=0)
     sl2 = sl1.sum(axis=0)
@@ -216,7 +217,7 @@ def makeEdsSumSpc(si, edsEvCh, edsZeOf, keV, npChan=0, verbose=False):
     sig.metadata.Acquisition_instrument.SEM.beam_energy = keV
     caption = "%s Sum Spectrum" % si.metadata.General.title
     sig.metadata.General.title = caption
-    sig.metadata.Signal.signal_origin = si.metadata.Signal.signal_origin
+    # sig.metadata.Signal.signal_origin = si.metadata.Signal.signal_origin
     sig.metadata.Signal.signal_type = si.metadata.Signal.signal_type
     return(sig)
     
