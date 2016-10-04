@@ -79,7 +79,7 @@ def medianFilterMaps(imgs, px=3):
     from scipy import ndimage as ndi
     filtered = []
     for img in imgs:
-        mf = ndi.filters.median_filter(img, size=(px,px))
+        mf = ndi.filters.median_filter(img, px) # size=(px,px))
         filtered.append(mf)
 
     return filtered
